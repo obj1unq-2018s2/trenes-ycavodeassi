@@ -65,6 +65,37 @@ class Formacion {
 	method cantidadVagones() = vagones.size()
 	
 	method cantidadUnidades() = self.cantidadLocomotoras() + self.cantidadVagones()
+	
+	method cantidadBanios() = vagones.sum{ vagon => vagon.cantidadBanios() }
+	
+	method cantidadPasajeros() = vagones.sum{ vagon => vagon.cantidadPasajeros() }
+}
+
+
+class FormacionCortaDistancia inherits Formacion {
+	
+	method formacionBienArmada() = self.puedeMoverse() && not self.esCompleja()
+	
+	method limiteVelocidad() = 60 //kms 
+	
+	override method velocidadMaxima() = self.limiteVelocidad().min(self.velocidadMaxima()) //Consultar
+	
+}
+
+class FormacionLargaDistancia inherits Formacion {
+	var property uneDosCiudadesGrandes = true
+	
+	method formacionBienArmada() = (self.cantidadPasajeros() / 50) <= self.cantidadBanios()
+
+	method limiteVelocidad() = if (self.uneDosCiudadesGrandes()) 200 else 150 //kms
+	
+	override method velocidadMaxima() = self.limiteVelocidad().min(self.velocidadMaxima()) //Consultar
+
+}
+
+class FormacionAltaVelocidad inherits FormacionLargaDistancia {
+	
+	override method formacionBienArmada() = self.velocidadMaxima()>250 && self.cantidadVagones()==self.vagonesLivianos()
 }
 
 class Locomotora {
@@ -84,12 +115,15 @@ class Locomotora {
 class VagonDePasajeros {
 	var metrosLargo //mts
 	var metrosAncho //mts
+	var cantBanios  //num
 	
 	method cantidadPasajeros() = if (metrosAncho <= 2.5) metrosLargo*8 else metrosLargo*10
 	
 	method pesoMaximo() = self.cantidadPasajeros()*80
 	
 	method esLiviano() = self.pesoMaximo() < 2500
+	
+	method cantidadBanios() = cantBanios
 }
 
 class VagonDeCarga {
@@ -100,7 +134,10 @@ class VagonDeCarga {
 	method pesoMaximo() = cargaMaxima+160
 	
 	method esLiviano() = self.pesoMaximo() < 2500
+	
+	method cantidadBanios() = 0
 }
+
 
 
 
