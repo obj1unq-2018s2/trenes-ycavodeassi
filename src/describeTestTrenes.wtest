@@ -1,9 +1,91 @@
+import trenes.*
+describe "Tests de Trenes Parte 1" {
+	//Locomotora
+	const locomotora01 = new Locomotora(peso=1000, pesoMaximo=10000, velocidadMaxima=60)
+	const locomotora02 = new Locomotora(peso=800, pesoMaximo=8000, velocidadMaxima=65)
+	const locomotora03 = new Locomotora(peso=500, pesoMaximo=10500, velocidadMaxima=120)
 
-describe "group of tests" {
-
-	test "testX" {
-
-		assert.that(true)
-
+	//Vagon
+	const vagonPasajeros01 = new VagonDePasajeros(metrosLargo=10, metrosAncho=2)
+	const vagonPasajeros02 = new VagonDePasajeros(metrosLargo=2, metrosAncho=3)
+	const vagonPasajeros03 = new VagonDePasajeros(metrosLargo=5, metrosAncho=3)
+	const vagonCarga01 = new VagonDeCarga(cargaMaxima=5000)
+	const vagonCarga02 = new VagonDeCarga(cargaMaxima=2339)
+	const vagonCarga03 = new VagonDeCarga(cargaMaxima=1000)
+	
+	//Formacion
+	const formacion01 = new Formacion()
+	const formacion02 = new Formacion()
+	
+	//Deposito
+	const deposito01 = new Deposito(locomotorasSueltas=#{locomotora02})
+	
+	fixture {
+		formacion01.agregarLocomotora(locomotora01)
+		formacion01.agregarLocomotora(locomotora02)
+		formacion01.agregarVagon(vagonPasajeros01)
+		formacion01.agregarVagon(vagonPasajeros02)
+		formacion01.agregarVagon(vagonCarga01)
+		formacion01.agregarVagon(vagonCarga02)
+		formacion01.agregarVagon(vagonCarga03)
+		
+		formacion02.agregarVagon(vagonPasajeros03)
+		
+		deposito01.agregarFormacion(formacion01)
+		deposito01.agregarFormacion(formacion02)
 	}
+	
+	test "Ejercicio 1" {
+		assert.equals(3, formacion01.vagonesLivianos())
+	}
+
+	test "Ejercicio 2" {
+		assert.equals(60, formacion01.velocidadMaxima())
+	}
+
+	test "Ejercicio 3" {
+		assert.that(formacion01.esEficiente())
+	}
+
+	test "Ejercicio 4" {
+		formacion01.agregarLocomotora(locomotora03)
+		assert.that(formacion01.puedeMoverse())
+	}
+	
+	test "Ejercicio 4 'No puede Moverse'" {
+		assert.notThat(formacion01.puedeMoverse())
+	}
+
+	test "Ejercicio 5" {
+		assert.equals(619,formacion01.kgEmpujeRestantesParaMoverse())
+	}
+
+	test "Ejercicio 6" {
+		assert.equals(#{vagonPasajeros01, vagonPasajeros03}, deposito01.vagonesMasPesados())
+	}
+
+	test "Ejercicio 7 'Necesita Conductor'" {
+		assert.that(deposito01.necesitaConductorExperimentado())
+	}
+	
+	test "Ejercicio 7 'No Necesita Conductor'" {
+		deposito01.eliminarFormacion(formacion01)
+		assert.notThat(deposito01.necesitaConductorExperimentado())
+	}
+	
+	test "Ejercicio 8 'Hay Locomotoras Sueltas Util" {
+		assert.that(deposito01.hayLocomotoraSuelta())
+		assert.that(deposito01.hayLocomotoraSueltaUtil(formacion02))
+		assert.equals(deposito01.obtenerLocomotoraSueltaUtil(formacion02), locomotora02)
+	}
+
+	test "Ejercicio 8 'Agregar locomotora suelta a formacion Si es util'" {
+		assert.equals(0,formacion02.cantidadLocomotoras())
+		deposito01.agregarLocomotoraSueltaAFormacionSi(formacion02)
+		assert.equals(1,formacion02.cantidadLocomotoras())
+		assert.notThat(deposito01.hayLocomotoraSuelta())
+	}
+	
+
+	
 }
