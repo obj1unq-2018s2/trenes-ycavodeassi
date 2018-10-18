@@ -1,4 +1,3 @@
-<img src="img/tren_antiguo.jpeg" height="200" width="300">
 
 # Ejercicio - Trenes
 ## Primera Parte

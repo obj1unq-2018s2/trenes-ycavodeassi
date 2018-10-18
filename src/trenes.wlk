@@ -69,33 +69,38 @@ class Formacion {
 	method cantidadBanios() = vagones.sum{ vagon => vagon.cantidadBanios() }
 	
 	method cantidadPasajeros() = vagones.sum{ vagon => vagon.cantidadPasajeros() }
+	
+	method formacionBienArmada() = self.puedeMoverse()
 }
 
+//el metodo lookup empieza en la clase de la que es instancia el receptor.
+//super() arranca en la superclase. De donde esta escrita la palabra super()... Rompe la regla method lookup
+//self dinamico && super estatico
 
 class FormacionCortaDistancia inherits Formacion {
 	
-	method formacionBienArmada() = self.puedeMoverse() && not self.esCompleja()
+	override method formacionBienArmada() = super() && not self.esCompleja()
 	
-	method limiteVelocidad() = 60 //kms 
+	method limiteVelocidad() = 60 //kms
 	
-	override method velocidadMaxima() = self.limiteVelocidad().min(self.velocidadMaxima()) //Consultar
+	override method velocidadMaxima() = self.limiteVelocidad().min(super()) //Consultar
 	
 }
 
 class FormacionLargaDistancia inherits Formacion {
 	var property uneDosCiudadesGrandes = true
 	
-	method formacionBienArmada() = (self.cantidadPasajeros() / 50) <= self.cantidadBanios()
+	override method formacionBienArmada() = super() && (self.cantidadPasajeros() / 50) <= self.cantidadBanios()
 
 	method limiteVelocidad() = if (self.uneDosCiudadesGrandes()) 200 else 150 //kms
 	
-	override method velocidadMaxima() = self.limiteVelocidad().min(self.velocidadMaxima()) //Consultar
+	override method velocidadMaxima() = self.limiteVelocidad().min(super()) //Consultar
 
 }
 
 class FormacionAltaVelocidad inherits FormacionLargaDistancia {
 	
-	override method formacionBienArmada() = self.velocidadMaxima()>250 && self.cantidadVagones()==self.vagonesLivianos()
+	override method formacionBienArmada() = super() && self.velocidadMaxima()>250 && self.cantidadVagones()==self.vagonesLivianos()
 }
 
 class Locomotora {
@@ -112,28 +117,31 @@ class Locomotora {
 	method esLocomotoraUtil(formacion) = self.arrastreUtil() >= formacion.kgEmpujeRestantes()
 }
 
-class VagonDePasajeros {
+class Vagon {
+	
+	method pesoMaximo()
+	
+	method esLiviano() = self.pesoMaximo() < 2500
+}
+
+class VagonDePasajeros inherits Vagon {
 	var metrosLargo //mts
 	var metrosAncho //mts
 	var cantBanios  //num
 	
 	method cantidadPasajeros() = if (metrosAncho <= 2.5) metrosLargo*8 else metrosLargo*10
 	
-	method pesoMaximo() = self.cantidadPasajeros()*80
-	
-	method esLiviano() = self.pesoMaximo() < 2500
+	override method pesoMaximo() = self.cantidadPasajeros()*80
 	
 	method cantidadBanios() = cantBanios
 }
 
-class VagonDeCarga {
+class VagonDeCarga inherits Vagon {
 	var cargaMaxima //kgs
 	
 	method cantidadPasajeros() = 0
 	
-	method pesoMaximo() = cargaMaxima+160
-	
-	method esLiviano() = self.pesoMaximo() < 2500
+	override method pesoMaximo() = cargaMaxima+160
 	
 	method cantidadBanios() = 0
 }
