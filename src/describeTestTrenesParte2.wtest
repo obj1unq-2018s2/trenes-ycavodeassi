@@ -1,9 +1,103 @@
+import depositos.*
+import formaciones.*
+import locomotoras.*
+import vagones.*
 
-describe "group of tests" {
+describe "Tests de Trenes Parte 2" {
+	//Locomotora
+	const locomotora01 = new Locomotora(peso=1000, pesoMaximo=11000, velocidadMaxima=150)
+	const locomotora02 = new Locomotora(peso=500, pesoMaximo=60500, velocidadMaxima=25)
+	const locomotora03 = new Locomotora(peso=5000, pesoMaximo=25000, velocidadMaxima=255)
+	const locomotora04 = new Locomotora(peso=500, pesoMaximo=3500, velocidadMaxima=550)
 
-	test "testX" {
+	//Vagon
+	const vagonPasajeros01 = new VagonDePasajeros(metrosLargo=5, metrosAncho=2.5, cantBanios = 2 )
+	const vagonPasajeros02 = new VagonDePasajeros(metrosLargo=10, metrosAncho=3, cantBanios = 0 )
+	const vagonPasajeros03 = new VagonDePasajeros(metrosLargo=2, metrosAncho=1, cantBanios= 1)
+	
+	const vagonCarga01 = new VagonDeCarga(cargaMaxima=5000)
+	const vagonCarga02 = new VagonDeCarga(cargaMaxima=50000)
+	const vagonCarga03 = new VagonDeCarga(cargaMaxima=500)
+	
+	//Formacion
+	const formacion01 = new FormacionCortaDistancia()
+	const formacion02 = new FormacionCortaDistancia()
+	const formacion03 = new FormacionLargaDistancia()
+	const formacion04 = new FormacionLargaDistancia()
+	const formacion05 = new FormacionLargaDistancia()
+	const formacion06 = new FormacionAltaVelocidad()
+	const formacion07 = new FormacionAltaVelocidad()
+	
+	//Deposito
 
-		assert.that(true)
-
+	fixture {
+		//formacion01 = arrastreUtil:10000 peso:8360 banios:2
+		formacion01.agregarLocomotora(locomotora01)
+		formacion01.agregarVagon(vagonPasajeros01)
+		formacion01.agregarVagon(vagonCarga01)
+		//formacion02 = arrastreUtil:60000 peso:50660
+		formacion02.agregarLocomotora(locomotora02)
+		formacion02.agregarVagon(vagonCarga02)
+		//formacion03 = arrastreUtil:10000 peso:8360 banios:2
+		formacion03.agregarLocomotora(locomotora01)
+		formacion03.agregarVagon(vagonPasajeros01)
+		formacion03.agregarVagon(vagonCarga01)
+		//formacion04 = arrastreUtil:10000 peso:9000 banios:0
+		formacion04.agregarLocomotora(locomotora01)
+		formacion04.agregarVagon(vagonPasajeros02)
+		//formacion05
+		formacion05.agregarLocomotora(locomotora03)
+		formacion05.agregarVagon(vagonPasajeros01)
+		//formacion06 
+		formacion06.agregarLocomotora(locomotora04)
+		formacion06.agregarVagon(vagonPasajeros03)
+		formacion06.agregarVagon(vagonCarga03)
+		//formacion07
+		formacion07.agregarLocomotora(locomotora04)
+		formacion07.agregarVagon(vagonPasajeros01)
+		formacion07.agregarVagon(vagonCarga01)
 	}
+	
+	test "Ejercicio 9 - form bien armada de corta dist" {
+		assert.that(formacion01.formacionBienArmada())
+	}
+		
+	test "Ejercicio 9 - form mal armada de corta dist" {
+		assert.notThat(formacion02.formacionBienArmada()) 
+	}
+
+	test "Ejercicio 9 - form bien armada de larga dist." {
+		assert.that(formacion03.formacionBienArmada())
+	}
+	
+	test "Ejercicio 9 - form mal armada de larga dist." {
+		assert.notThat(formacion04.formacionBienArmada())
+	}
+
+	test "Ejercicio 10 - form larga dist une dos ciudades grandes" {
+		assert.equals(200, formacion05.velocidadMaxima())
+	}
+	
+	test "Ejercicio 10 - form larga dist NO une dos ciudades grandes" {
+		formacion05.uneDosCiudadesGrandes(false)
+		assert.equals(150, formacion05.velocidadMaxima())
+	}
+	
+	
+	test "Ejercicio 10 - form corta dist limite en 60km." {
+		assert.equals(60, formacion01.velocidadMaxima())
+	}
+	
+	test "Ejercicio 10 - form corta dist abajo del limite" {
+		assert.equals(25, formacion02.velocidadMaxima())
+	}
+
+	test "Ejercicio 11 - form bien armada de alta vel." {
+		assert.that(formacion06.formacionBienArmada())
+	}
+	
+	test "Ejercicio 11 - form mal armada de alta vel." {
+		assert.notThat(formacion07.formacionBienArmada())
+	}
+	
 }

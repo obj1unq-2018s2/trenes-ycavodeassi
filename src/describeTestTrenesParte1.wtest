@@ -1,4 +1,8 @@
-import trenes.*
+import depositos.*
+import formaciones.*
+import locomotoras.*
+import vagones.*
+
 describe "Tests de Trenes Parte 1" {
 	//Locomotora
 	const locomotora01 = new Locomotora(peso=1000, pesoMaximo=10000, velocidadMaxima=60)
@@ -6,9 +10,10 @@ describe "Tests de Trenes Parte 1" {
 	const locomotora03 = new Locomotora(peso=500, pesoMaximo=10500, velocidadMaxima=120)
 
 	//Vagon
-	const vagonPasajeros01 = new VagonDePasajeros(metrosLargo=10, metrosAncho=2)
-	const vagonPasajeros02 = new VagonDePasajeros(metrosLargo=2, metrosAncho=3)
-	const vagonPasajeros03 = new VagonDePasajeros(metrosLargo=5, metrosAncho=3)
+	const vagonPasajeros01 = new VagonDePasajeros(metrosLargo=10, metrosAncho=2, cantBanios = 0)
+	const vagonPasajeros02 = new VagonDePasajeros(metrosLargo=2, metrosAncho=3, cantBanios = 0)
+	const vagonPasajeros03 = new VagonDePasajeros(metrosLargo=5, metrosAncho=3, cantBanios = 0) 
+
 	const vagonCarga01 = new VagonDeCarga(cargaMaxima=5000)
 	const vagonCarga02 = new VagonDeCarga(cargaMaxima=2339)
 	const vagonCarga03 = new VagonDeCarga(cargaMaxima=1000)
